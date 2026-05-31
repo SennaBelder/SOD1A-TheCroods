@@ -1,6 +1,6 @@
 <?php
 try {
-    $db = new PDO('mysql:host=localhost;dbname=The-Croods', 'root', '');
+    $db = new PDO('mysql:host=localhost;dbname=the-croods', 'root', '');
 } catch (PDOException $e) {
     $sMsg = '<p> 
             Regelnummer: ' . $e->getLine() . '<br /> 
