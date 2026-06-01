@@ -11,13 +11,8 @@
 <?php
 include "underconstruct.php";
 
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'klant') {
-    // header('Location: pur-crud-add.php');
-    // exit;  // ← altijd exit na header redirect
 }
 
 require_once 'dbconnect.php';
@@ -36,7 +31,7 @@ $stmt = $db->query($sql);
 $rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
 ?>
 
-<h2>LET OP: je kan maar één product tegelijk bestellen</h2>
+<h2 class = "warning                                    ">LET OP: je kan maar één product tegelijk bestellen</h2>
 
 <?php if (count($rows) > 0): ?>   <!-- ← count() ipv num_rows -->
     <table>
