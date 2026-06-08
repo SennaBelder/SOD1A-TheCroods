@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 <?php
 
 if (!isset($_GET['id'])) {
@@ -6,7 +5,6 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-
 
 $username = "root";
 $password = "";
@@ -20,11 +18,9 @@ try {
     die("Connectie mislukt: " . $e->getMessage());
 }
 
-
 $stmt = $pdo->prepare("SELECT * FROM product WHERE id = :id");
 $stmt->execute(['id' => $id]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
-
 
 if (!$product) {
     die("Product niet gevonden");
@@ -32,66 +28,48 @@ if (!$product) {
 
 ?>
 
-=======
->>>>>>> Stashed changes
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
-<<<<<<< Updated upstream
     <title>Product Bewerken</title>
-  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h1>Product Bewerken</h1>
-<button>    
-        
-<a href="pro-crud-get.php">Terug naar overzicht</a>
-</button>
-    <label>ID:</label><br>
-    <input type="text" name="id" value="<?= $product['id'] ?>" readonly><br><br>
 
-    <label>Productnaam:</label><br>
-    <input type="text" name="productname" value="<?= $product['productname'] ?>" required><br><br>
+<a href="pro-crud-get.php">← Terug naar overzicht</a>
 
-    <label>Ingredients:</label><br>
-    <input type="text" name="ingredients" value="<?= $product['ingredients'] ?>"><br><br>
+<form action="pro-crud-update.php" method="POST">
 
-    <label>Allergens:</label><br>
-    <input type="text" name="allergens" value="<?= $product['allergens'] ?>"><br><br>
+<input type="hidden" name="id" value="<?= htmlspecialchars($product['id']) ?>">
 
-    <label>Prijs:</label><br>
-    <input type="text" name="price" value="<?= $product['price'] ?>" required><br><br>
+<label>Productnaam:</label><br>
+<input type="text" name="productname" value="<?= htmlspecialchars($product['productname']) ?>" required><br><br>
 
-    <label>Categorie ID:</label><br>
-    <input type="number" name="categoryid" value="<?= $product['categoryid'] ?>" required><br><br>
+<label>Ingredients:</label><br>
+<input type="text" name="ingredients" value="<?= htmlspecialchars($product['ingredients']) ?>"><br><br>
 
-    <label>Supplier ID:</label><br>
-    <input type="number" name="supplierid" value="<?= $product['supplierid'] ?>" required><br><br>
+<label>Allergens:</label><br>
+<input type="text" name="allergens" value="<?= htmlspecialchars($product['allergens']) ?>"><br><br>
 
-    <label>Actief:</label><br>
-    <input type="text" value="<?= $product['isactive'] ?>" readonly><br><br>
-    <button>
-        <a href="pro-crud-update.php">Opslaan</a>
-           </button>
-           <button>
-    <a href="pro-crud-get.php">Breek af</a>
-    </button>
- 
+<label>Prijs:</label><br>
+<input type="text" name="price" value="<?= htmlspecialchars($product['price']) ?>" required><br><br>
+
+<label>Categorie ID:</label><br>
+<input type="number" name="categoryid" value="<?= htmlspecialchars($product['categoryid']) ?>" required><br><br>
+
+<label>Supplier ID:</label><br>
+<input type="number" name="supplierid" value="<?= htmlspecialchars($product['supplierid']) ?>" required><br><br>
+
+<label>Actief:</label><br>
+<input type="text" value="<?= htmlspecialchars($product['isactive']) ?>" readonly><br><br>
+
+<button type="submit">Opslaan</button>
+<a href="pro-crud-get.php">Annuleren</a>
+
 </form>
 
-=======
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    <button>wijzigen</button>
-    <form action="wijzigen"></form>
-
-
-    
->>>>>>> Stashed changes
 </body>
 </html>
