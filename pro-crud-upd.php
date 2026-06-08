@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <?php
 
 if (!isset($_GET['id'])) {
@@ -31,10 +32,13 @@ if (!$product) {
 
 ?>
 
+=======
+>>>>>>> Stashed changes
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<<<<<<< Updated upstream
     <title>Product Bewerken</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -77,5 +81,17 @@ if (!$product) {
  
 </form>
 
+=======
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <button>wijzigen</button>
+    <form action="wijzigen"></form>
+
+
+    
+>>>>>>> Stashed changes
 </body>
 </html>
