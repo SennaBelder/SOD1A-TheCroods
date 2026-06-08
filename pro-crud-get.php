@@ -2,11 +2,9 @@
 session_start();
 
 
-if (!isset($_SESSION['admin'])) {
-    die("Access Denied");
-   } else {
-        echo "Welkom, admin!";
-}
+
+   
+   
 
 $username = "root";
 $password = "";
