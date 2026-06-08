@@ -1,12 +1,15 @@
 <?php
 
+
+
+
 if (!isset($_GET['id'])) {
     die("Geen id meegegeven");
 }
 
-$id = $_GET['id'];
+$id = $stmt['id'];
 
-
+ 
 $pdo = new PDO("mysql:host=localhost;dbname=the-croods;charset=utf8mb4", "root", "");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -22,17 +25,17 @@ if (!$product) {
 
 $check = $pdo->prepare("
     SELECT COUNT(*) 
-    FROM orderline ol
+    orderregels
     JOIN orders o ON ol.orderid = o.id
     WHERE ol.productid = :id 
     AND o.delivered = 0
 ");
-$check->execute(['id' => $id]);
-$count = $check->fetchColumn();
 
+$check->execute(['id' => $id]); {
+$count = $check->fetchColumn();
+}
 if ($count > 0) {
-   
-    header("Location: pro-crud-get.php?error=in_use");
+    header("Location: pro-crud-get.php");
     exit;
 }
 
@@ -41,7 +44,7 @@ if ($count > 0) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Verwijderen</title>
+    <title>Product verwijderen</title>
 </head>
 <body>
 
@@ -57,7 +60,7 @@ if ($count > 0) {
 
 <form action="pro-crud-delete.php" method="post">
     <input type="hidden" name="id" value="<?= $product['id'] ?>">
-    
+
     <button type="submit">Verwijder</button>
     <a href="pro-crud-get.php">Breek af</a>
 </form>

@@ -18,6 +18,5 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $stmt = $pdo->prepare("DELETE FROM product WHERE id = :id");
 $stmt->execute(['id' => $id]);
 
-
 header("Location: pro-crud-get.php?success=deleted");
 exit;
