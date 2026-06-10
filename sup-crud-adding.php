@@ -8,26 +8,26 @@
 
 <body>
     <?php
-        session_start();
-        // controleren of de gebruiker afkomt van het leverancier selectie scherm
-        // Dat weet je doordat hij dan daar de submit knop heeft ingedrukt
-        if (!isset($_POST["supp_applyinsert"]) )
-        {
-            header("Refresh: 4, url=sup-crud-get.php");
-            echo "<h2>Je bent hier niet op de juiste manier gekomen!</h2>";
-            exit();
-        }
+        // session_start();
+        // // controleren of de gebruiker afkomt van het leverancier selectie scherm
+        // // Dat weet je doordat hij dan daar de submit knop heeft ingedrukt
+        // if (!isset($_POST["supp_applyinsert"]) )
+        // {
+        //     header("Refresh: 4, url=sup-crud-get.php");
+        //     echo "<h2>Je bent hier niet op de juiste manier gekomen!</h2>";
+        //     exit();
+        // }
 
         // Haal alle formulier velden binnen
-        $supp_company = test_input($_POST["supp_company"]);
-        $supp_streetaddress = test_input($_POST["supp_streetaddress"]);
-        $supp_streetnr = test_input($_POST["supp_streetnr"]);
-        $supp_zipcode = test_input($_POST["supp_zipcode"]);
-        $supp_city = test_input($_POST["supp_city"]);
-        $supp_state = test_input($_POST["supp_state"]);
-        $supp_country = test_input($_POST["supp_country"]);
-        $supp_teleph = test_input($_POST["supp_teleph"]);
-        $supp_domain = test_input($_POST["supp_domain"]);
+        $supp_company = test_input($_POST["supp_company"]   ?? '');
+        $supp_streetaddress = test_input($_POST["supp_streetaddress"]   ?? '');
+        $supp_streetnr = test_input($_POST["supp_streetnr"]   ?? '');
+        $supp_zipcode = test_input($_POST["supp_zipcode"]   ?? '');
+        $supp_city = test_input($_POST["supp_city"]   ?? '');
+        $supp_state = test_input($_POST["supp_state"]   ?? '');
+        $supp_country = test_input($_POST["supp_country"]   ?? '');
+        $supp_teleph = test_input($_POST["supp_teleph"]   ?? '');
+        $supp_domain = test_input($_POST["supp_domain"]   ?? '');
 
         // Set SESSION variable to mark checking of input (for return to previous program)
         $_SESSION["chk_supp_insert"] = true;

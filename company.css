@@ -159,3 +159,9 @@ li.frstlvl > a {
   text-align: center;
 }
 
+.warning{
+  background-color: rgb(209, 45, 45);
+  color: #dfd9e2;
+  width: 40vw;
+  margin-left: 25vw;
+}
