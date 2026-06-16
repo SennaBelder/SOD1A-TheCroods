@@ -8,7 +8,7 @@
 
 <body>
 <header>
-		<h1>Welkom bij de Bread Company</h1>
+		<!-- <h1>Welkom bij de Bread Company</h1> -->
 		<!-- hieronder wordt het menu opgehaald. -->
 		<?php
 			session_start(); 
@@ -18,11 +18,11 @@
  
 	<!-- Deze pagina is bestemd om functionaliteiten die nog niet af zijn van een 
         nette boodschap te voorzien -->
- 	<main>
+ 	<!-- <main>
 		<div class="centerflex">
 			<img class="centreer" src="images/construction.jpg" alt="main page image" width="500px"> 
-		</div>
-		  <p></p>
+		</div> -->
+		  <!-- <p></p>
           <p> Er wordt hard gewerkt om u op deze website zo goed mogelijk te voorzien van 
               alles wat uw leven een stuk makkelijker maakt.
           </p> 
@@ -32,7 +32,7 @@
 		  <p>
 			  De door u aangevraagde pagina / functie is nog niet klaar voor gebruik.
 		  </p>
-	</main>
+	</main> -->
 	
 </body>
 </html>
