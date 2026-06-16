@@ -1,154 +1,128 @@
+<?php
+    session_start();
+
+    // // Controleer of de gebruiker afkomt van het bestelformulier
+    // // Dat weet je doordat hij daar op de knop "Bestellen" heeft gedrukt
+    // // (vereist een hidden input <input type="hidden" name="prod_applyinsert" value="1"> in pur-crud-add.php)
+    // if (!isset($_POST["prod_applyinsert"]))
+    // {
+    //     header("Refresh: 4, url=pur-crud-add.php");
+    //     echo "<h2>Je bent hier niet op de juiste manier gekomen!</h2>";
+    //     exit();
+    // }
+
+    // Controleer of er een ingelogde klant is
+    if (!isset($_SESSION["clientid"]))
+    {
+        header("Refresh: 4, url=login.php");
+        echo "<h2>Je moet ingelogd zijn om een bestelling te kunnen plaatsen!</h2>";
+        exit();
+    }
+    $cli_clientid = $_SESSION["clientid"];
+
+    // Haal de ingevulde gegevens uit het formulier
+    $prod_productid = test_input($_POST["prod_productid"] ?? '');
+    $prod_price     = test_input($_POST["prod_price"]     ?? '');
+    $pur_quantity   = test_input($_POST["pur_quantity"]   ?? '');
+
+    // Controleer of er een geldig product is gekozen
+    if (empty($prod_productid) || !is_numeric($prod_productid))
+    {
+        header("Refresh: 4, url=pur-crud-add.php");
+        echo "<h2>Er is geen geldig product gekozen!</h2>";
+        exit();
+    }
+
+    // Controleer of de prijs geldig is
+    if ($prod_price === '' || !is_numeric($prod_price))
+    {
+        header("Refresh: 4, url=pur-crud-add.php");
+        echo "<h2>De prijs van het product ontbreekt of is ongeldig!</h2>";
+        exit();
+    }
+
+    // Controleer of het aantal geldig is (minimaal 1)
+    if (empty($pur_quantity) || !is_numeric($pur_quantity) || $pur_quantity < 1)
+    {
+        header("Refresh: 4, url=pur-crud-add.php");
+        echo "<h2>Het aantal moet minimaal 1 zijn!</h2>";
+        exit();
+    }
+
+    require_once "dbconnect.php";
+
+    // STAP 1: Purchase-record aanmaken, maar alleen als er nog geen bestelling loopt
+    if (!isset($_SESSION["purchaseid"]))
+    {
+        try
+        {
+            $sQuery = "INSERT INTO `purchase` (`clientid`, `purchasedate`, `delivered`)
+                                VALUES (:cli_clientid, :pur_purchasedate, :pur_delivered)";
+            $oStmt = $db->prepare($sQuery);
+            $oStmt->bindValue(":cli_clientid", $cli_clientid);
+            $oStmt->bindValue(":pur_purchasedate", date("Y-m-d"));
+            $oStmt->bindValue(":pur_delivered", 0);
+            $oStmt->execute();
+
+            // Nieuwe purchase ID ophalen en bewaren in SESSION
+            $_SESSION["purchaseid"] = $db->lastInsertId();
+        }
+        catch (PDOException $e)
+        {
+            $sMsg = '<p>
+                        Regelnummer: ' . $e->getLine() . '<br />
+                        Bestand: ' . $e->getFile() . '<br />
+                        Foutmelding: ' . $e->getMessage() . '
+                    </p>';
+
+            trigger_error($sMsg);
+            die();
+        }
+    }
+
+    $pur_purchaseid = $_SESSION["purchaseid"];
+
+    // STAP 2: Purchaseline-record aanmaken
+    try
+    {
+        $sQuery = "INSERT INTO `purchaseline` (`purchaseid`, `productid`, `price`, `quantity`)
+                            VALUES (:pur_purchaseid, :prod_productid, :prod_price, :pur_quantity)";
+        $oStmt = $db->prepare($sQuery);
+        $oStmt->bindValue(":pur_purchaseid", $pur_purchaseid);
+        $oStmt->bindValue(":prod_productid", $prod_productid);
+        $oStmt->bindValue(":prod_price", $prod_price);
+        $oStmt->bindValue(":pur_quantity", $pur_quantity);
+        $oStmt->execute();
+    }
+    catch (PDOException $e)
+    {
+        $sMsg = '<p>
+                    Regelnummer: ' . $e->getLine() . '<br />
+                    Bestand: ' . $e->getFile() . '<br />
+                    Foutmelding: ' . $e->getMessage() . '
+                </p>';
+
+        trigger_error($sMsg);
+        die();
+    }
+?>
 <!DOCTYPE html>
-<html lang="nl"> 
+<html lang="nl">
 <head>
-	 <meta charset="UTF-8">
-	 <title>Leverancier toevoegen</title>
-	 <link rel="stylesheet" type="text/css" href="company.css">  
+    <meta charset="UTF-8">
+    <title>Bestelling opgeslagen</title>
+    <link rel="stylesheet" type="text/css" href="company.css">
 </head>
-
 <body>
-    <?php
-        // session_start();
-        // // controleren of de gebruiker afkomt van het leverancier selectie scherm
-        // // Dat weet je doordat hij dan daar de submit knop heeft ingedrukt
-        // if (!isset($_POST["supp_applyinsert"]) )
-        // {
-        //     header("Refresh: 4, url=sup-crud-get.php");
-        //     echo "<h2>Je bent hier niet op de juiste manier gekomen!</h2>";
-        //     exit();
-        // }
 
-        // Haal alle formulier velden binnen
-        $prod_productname = test_input($_POST["prod_productname"]    ??'');
-        $prod_ingredients = test_input($_POST["prod_ingredients"]    ??'');
-        $prod_allergens = test_input($_POST["prod_allergens"]    ??'');
-        $prod_price = test_input($_POST["prod_price"]    ??'');
-        $prod_categoryid = test_input($_POST["prod_categoryid"]    ??'');
-        $prod_supplierid = test_input($_POST["prod_supplierid"]    ??'');
+    <h2>Bestelling is opgeslagen</h2>
+    <h2>Je kan een nieuw product aan de bestelling toevoegen</h2>
 
-        // Set SESSION variable to mark checking of input (for return to previous program)
-        $_SESSION["chk_supp_insert"] = true;
+    <p><a href="pur-crud-add.php">Terug naar het productoverzicht</a></p>
 
-        // Check all input to verify content
-        if (empty($supp_company) || !check_alfabet($supp_company))
-        {
-            header("Refresh: 4, url=sup-crud-add.php");
-            echo "<h2>De leveranciersnaam moet ingevuld zijn (met alleen letters en spaties)</h2>";
-            exit();
-        }
-
-        if (empty($supp_streetaddress) || !check_alfanum($supp_streetaddress))
-        {
-            header("Refresh: 4, url=sup-crud-add.php");
-            echo "<h2>Het vestigingsadres moet ingevuld zijn (met alleen letters, cijfers en spaties)</h2>";
-            exit();
-        }
-
-        if (empty($supp_streetnr) || !is_numeric($supp_streetnr))
-        {
-            header("Refresh: 4, url=sup-crud-add.php");
-            echo "<h2>Het huisnummer moet ingevuld zijn (met alleen cijfers)</h2>";
-            exit();
-        }
-
-        if (empty($supp_zipcode) || !check_alfanum($supp_zipcode))
-        {
-            header("Refresh: 4, url=sup-crud-add.php");
-            echo "<h2>Het huisnummer moet ingevuld zijn (met alleen letters, cijfers en spaties)</h2>";
-            exit();
-        }
-
-        if (empty($supp_city) || !check_alfabet($supp_city))
-        {
-            header("Refresh: 4, url=sup-crud-add.php");
-            echo "<h2>De vestigingsplaats moet ingevuld zijn (met alleen letters en spaties)</h2>";
-            exit();
-        }
-
-        if (!check_alfanum($supp_state))
-        {
-            header("Refresh: 4, url=sup-crud-add.php");
-            echo "<h2>De provincie mag alleen letters, cijfers en spaties bevatten</h2>";
-            exit();
-        }
-
-        // Controleer of er een geldig land is ingevuld
-        require_once "dbconnect.php";
-        try 
-        {
-            $sQuery = "SELECT * FROM country WHERE idcountry = :supp_country";
-            $oStmt = $db->prepare($sQuery);
-            $oStmt->bindValue(":supp_country", $supp_country);
-            $oStmt->execute();
-
-            if ($oStmt->rowCount() <> 1) 
-            {
-                header("Refresh: 4, url=sup-crud-get.php");
-                echo "<h2>Het opgegeven landnummer bestaat niet!</h2>";
-                exit();
-            }
-        } catch (PDOException $e) 
-        {
-            $sMsg = '<p> 
-                        Regelnummer: ' . $e->getLine() . '<br /> 
-                        Bestand: ' . $e->getFile() . '<br /> 
-                        Foutmelding: ' . $e->getMessage() . ' 
-                    </p>';
-    
-            trigger_error($sMsg);
-            die();
-        }
-        // checking complete, release SESSION variable
-        unset($_SESSION["chk_supp_insert"]);
-
-        // Pas na alle controles bouw je de header (met navigatie) op.
-
-        try 
-        {
-            $sQuery = "INSERT INTO `supplier`(`company`, `adress`, `streetnr`, 
-                                              `zipcode`, `city`, `state`, `countryid`, 
-                                              `telephone`, `website`) 
-                                VALUES (:supp_company, :supp_streetaddress, :supp_streetnr,
-                                        :supp_zipcode, :supp_city, :supp_state, :supp_country,
-                                        :supp_teleph, :supp_domain)";
-            $oStmt = $db->prepare($sQuery);
-            $oStmt->bindValue(":supp_company", $supp_company);
-            $oStmt->bindValue(":supp_streetaddress", $supp_streetaddress);
-            $oStmt->bindValue(":supp_streetnr", $supp_streetnr);
-            $oStmt->bindValue(":supp_zipcode", $supp_zipcode);
-            $oStmt->bindValue(":supp_city", $supp_city);
-            $oStmt->bindValue(":supp_state", $supp_state);
-            $oStmt->bindValue(":supp_country", $supp_country);
-            $oStmt->bindValue(":supp_teleph", $supp_teleph);
-            $oStmt->bindValue(":supp_domain", $supp_domain);
-            $oStmt->execute();
-
-            header("Refresh: 2, url=sup-crud-get.php");
-            echo "<header class='spacebelowabove'>";
-            echo "<h1>Toevoegen leverancier</h1>";
-            // hieronder wordt het menu opgehaald. -->
-                include "nav.html";
-    	    echo "</header>";
-
-            echo "<h2>De gegevens zijn toegevoegd aan de database!</h2>";
-//            exit();
-
-        } catch (PDOException $e) 
-        {
-            $sMsg = '<p> 
-                        Regelnummer: ' . $e->getLine() . '<br /> 
-                        Bestand: ' . $e->getFile() . '<br /> 
-                        Foutmelding: ' . $e->getMessage() . ' 
-                    </p>';
-    
-            trigger_error($sMsg);
-            die();
-        }
-
-    ?>
-    
-    <?php
-    // Hier komen alle functies te staan
+</body>
+</html>
+<?php
 
     // test_input zorgt voor het opschonen van een veld in een formulier.
     function test_input($inpData)
@@ -159,33 +133,4 @@
         return $inpData;
     }
 
-        // check_alfanum controleert of de input alleen uit letters, cijfers of spaties bestaat
-        function check_alfanum($inpData)
-        {
-            if (preg_match("/^[a-zA-Z0-9-' ]*$/",$inpData)) 
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        // check_alfabet controleert of de input alleen uit letters en spaties bestaat.
-        function check_alfabet($inpData)
-        {
-            if (preg_match("/^[a-zA-Z-' ]*$/",$inpData)) 
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-    ?>    
-
-</body>
-</html>
+?>
