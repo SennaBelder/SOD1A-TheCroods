@@ -32,7 +32,7 @@
 		  <p>
 			  De door u aangevraagde pagina / functie is nog niet klaar voor gebruik.
 		  </p>
-	</main>
+	</main> -->
 	
 </body>
 </html>
