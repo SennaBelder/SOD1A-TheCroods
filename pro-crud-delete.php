@@ -1,14 +1,16 @@
 <?php
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die("Ongeldige toegang");
-}
 
-$id = $_POST['id'] ?? '';
 
-if (empty($id)) {
-    die("Geen id ontvangen");
-}
+
+   
+   
+
+$username = "root";
+$password = "";
+$dbname = "the-croods";
+$dsn = "mysql:host=localhost;dbname=$dbname;charset=utf8mb4";
 
 
 $pdo = new PDO("mysql:host=localhost;dbname=the-croods;charset=utf8mb4", "root", "");
@@ -20,3 +22,4 @@ $stmt->execute(['id' => $id]);
 
 header("Location: pro-crud-get.php?success=deleted");
 exit;
+?>

@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 
 
 
@@ -7,8 +7,12 @@ if (!isset($_GET['id'])) {
     die("Geen id meegegeven");
 }
 
-$id = $stmt['id'];
+$id = $_GET['id'];
 
+$username = "root";
+$password = "";
+$dbname = "the-croods";
+$dsn = "mysql:host=localhost;dbname=$dbname;charset=utf8mb4";
  
 $pdo = new PDO("mysql:host=localhost;dbname=the-croods;charset=utf8mb4", "root", "");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -24,11 +28,10 @@ if (!$product) {
 
 
 $check = $pdo->prepare("
-    SELECT COUNT(*) 
-    orderregels
-    JOIN orders o ON ol.orderid = o.id
-    WHERE ol.productid = :id 
-    AND o.delivered = 0
+    SELECT COUNT(*)
+    FROM purchaseline pl
+    JOIN purchase p ON pl.purchaseid = p.id
+    WHERE pl.productid = :id
 ");
 
 $check->execute(['id' => $id]); {
