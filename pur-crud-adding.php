@@ -21,15 +21,16 @@
     $cli_clientid = $_SESSION["clientid"];
 
     // Haal de ingevulde gegevens uit het formulier
-    $prod_productid = test_input($_POST["prod_productid"] ?? '');
+    $prod_productid = test_input($_POST["productid"] ?? '');
     $prod_price     = test_input($_POST["prod_price"]     ?? '');
-    $pur_quantity   = test_input($_POST["pur_quantity"]   ?? '');
+    $pur_quantity   = test_input($_POST["aantal"]   ?? '');
 
     // Controleer of er een geldig product is gekozen
     if (empty($prod_productid) || !is_numeric($prod_productid))
     {
         header("Refresh: 4, url=pur-crud-add.php");
         echo "<h2>Er is geen geldig product gekozen!</h2>";
+        echo "<h2>Ingegeven product-id: " && "$prod_productid  </h2>";
         exit();
     }
 

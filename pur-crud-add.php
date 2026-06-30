@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="company.css">
-  <title>Add product</title>
-</head>
-<body>
-
 <?php include "underconstruct.php";
 
 
@@ -30,9 +20,22 @@ $stmt = $db->query($sql);
 $rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
 ?>
 
-<h2 class = "warning                                    ">LET OP: je kan maar één product tegelijk bestellen</h2>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="company.css">
+  <title>Add product</title>
+</head>
+<body>
+
+
+<h2 class = "warning">LET OP: je kan maar één product tegelijk bestellen</h2>
 
 <?php if (count($rows) > 0): ?>   <!-- ← count() ipv num_rows -->
+
+    <!-- <form action="pur-crud-adding.php" method= "POST"> -->
     <table>
         <thead>
             <tr>
@@ -54,12 +57,12 @@ $rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
                 <td>
                     <form action="pur-crud-adding.php" method="POST">
                         <input type="hidden" name="product_id" value="<?= (int)$row['id'] ?>">
-                        <input type="number" name="aantal" value="1" min="1" required>
-                </td>
-                <td>
+                        <input type="number" name="aantal" value="0" min="1" required>
+                        <input type="hidden" name="price">€ <?= number_format($row['price'], 2, ',', '.') ?>
                         <button type="submit" class="btn-bestellen">Bestellen</button>
                     </form>
                 </td>
+
             </tr>
             <?php endforeach; ?>
         </tbody>
@@ -68,6 +71,6 @@ $rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
 <?php else: ?>
     <p class="no-products">Er zijn momenteel geen actieve producten beschikbaar</p>
 <?php endif; ?>
-
+</form>
 </body>
 </html>
