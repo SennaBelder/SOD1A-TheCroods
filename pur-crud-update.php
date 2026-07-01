@@ -1,27 +1,25 @@
 <?php
 session_start();
+include "nav.html";
 
-if (!isset($_SESSION["clientid"]))
-{
+if (!isset($_SESSION["benJeErAl"]) || $_SESSION["SoortToegang"] !== "Klant") {
     header("Refresh: 4, url=login.php");
-    echo "<h2>Je moet ingelogd zijn om een bestelling te kunnen wijzigen!</h2>";
+    echo "<h2>Je moet ingelogd zijn als klant!</h2>";
     exit();
 }
-$cli_clientid = $_SESSION["clientid"];
 
-if (!isset($_SESSION["wijzigingen"]) || !is_array($_SESSION["wijzigingen"]))
-{
+$cli_clientid = $_SESSION["welkNummerIsDit"];
+
+if (!isset($_SESSION["wijzigingen"]) || !is_array($_SESSION["wijzigingen"])) {
     header("Refresh: 4, url=pur-crud-upd.php");
-    echo "<h2>Geen wijzigingen gevonden om op te slaan!</h2>";
+    echo "<h2>Geen wijzigingen om op te slaan!</h2>";
     exit();
 }
 
 require_once "dbconnect.php";
 
-try
-{
-    foreach ($_SESSION["wijzigingen"] as $row)
-    {
+try {
+    foreach ($_SESSION["wijzigingen"] as $row) {
         $sQuery = "UPDATE purchaseline pl
                    INNER JOIN purchase pur ON pur.id = pl.purchaseid
                    SET pl.quantity = :nieuw_aantal
@@ -32,14 +30,8 @@ try
         $oStmt->bindValue(":cli_clientid", $cli_clientid);
         $oStmt->execute();
     }
-}
-catch (PDOException $e)
-{
-    $sMsg = '<p>
-                Regelnummer: ' . $e->getLine() . '<br />
-                Bestand: ' . $e->getFile() . '<br />
-                Foutmelding: ' . $e->getMessage() . '
-            </p>';
+} catch (PDOException $e) {
+    $sMsg = '<p>Regelnummer: ' . $e->getLine() . '<br />Bestand: ' . $e->getFile() . '<br />Foutmelding: ' . $e->getMessage() . '</p>';
     trigger_error($sMsg);
     die();
 }
@@ -50,13 +42,13 @@ unset($_SESSION["wijzigingen"]);
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="company.css">
     <title>Bestelling gewijzigd</title>
 </head>
 <body>
 
-<h2>De bestelling is gewijzigd</h2>
-
-<p><a href="pur-crud-upd.php">Terug naar je bestellingen</a></p>
+<h2>Bestelling is gewijzigd</h2>
+<p><a class="link" href="pur-crud-upd.php">Terug naar je bestellingen</a></p>
 
 </body>
 </html>
