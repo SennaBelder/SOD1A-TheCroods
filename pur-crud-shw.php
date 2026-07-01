@@ -14,11 +14,13 @@ include "underconstruct.php";
 require_once 'dbconnect.php';
 
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'klant') {
-    // header('Location: scripts/dummy_client_login.php');
-    // exit;
+if (!isset($_SESSION["benJeErAl"]) || $_SESSION["SoortToegang"] !== "Klant")
+{
+    header("Refresh: 4, url=login.php");
+    echo "<h2>Je moet ingelogd zijn als klant om producten te kunnen bestellen!</h2>";
+    exit();
 }
-$klant_id = 1; // ← tijdelijk, vul een bestaand client ID in
+$klant_id = 3; // ← tijdelijk, vul een bestaand client ID in
 // $klant_id = $_SESSION['user_id'];
 
 $sql = "
