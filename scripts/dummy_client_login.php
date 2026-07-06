@@ -53,7 +53,7 @@
         {
           $dataClient = $query->fetch(PDO::FETCH_ASSOC);
           $_SESSION["benJeErAl"] = true;
-          $_SESSION["welkNummerIsDit"] = $randomclient;
+          $_SESSION["clientid"] = $randomclient;
           $_SESSION["wieBenJeDan"] = $dataClient["first_name"]." ".$dataClient["last_name"];
           $_SESSION["SoortToegang"] = "Klant";
           include "../nav.html";          
