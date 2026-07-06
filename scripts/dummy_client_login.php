@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dummy login klant</title>
+    <link rel="stylesheet" href="company.css">
 </head>
 <body>
     <?php
@@ -56,7 +57,8 @@
           $_SESSION["clientid"] = $randomclient;
           $_SESSION["wieBenJeDan"] = $dataClient["first_name"]." ".$dataClient["last_name"];
           $_SESSION["SoortToegang"] = "Klant";
-          include "../nav.html";          
+          
+          header("Refresh: 2, url=../index.php");
           echo "<h2>Inloggen als KLANT is gelukt</h2><br>";
           echo "<p>Inlognaam is : ". $_SESSION["wieBenJeDan"] ."</p>";
           echo "<p>Primary key van deze klant is: ". $_SESSION["wieBenJeDan"] ."</p>";

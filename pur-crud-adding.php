@@ -12,11 +12,11 @@
         // // controleren of de gebruiker afkomt van het leverancier selectie scherm
         // // Dat weet je doordat hij dan daar de submit knop heeft ingedrukt
         // if (!isset($_POST["supp_applyinsert"]) )
-        // {
-        //     header("Refresh: 4, url=sup-crud-get.php");
-        //     echo "<h2>Je bent hier niet op de juiste manier gekomen!</h2>";
-        //     exit();
-        // }
+        {
+            header("Refresh: 4, url=sup-crud-get.php");
+            echo "<h2>Je bent hier niet op de juiste manier gekomen!</h2>";
+            exit();
+        }
 
         // Haal alle formulier velden binnen
         $supp_company = test_input($_POST["supp_company"]);
@@ -192,6 +192,7 @@
 
 </body>
 </html>
+
 <?php
 session_start();
 
@@ -313,12 +314,13 @@ catch (PDOException $e)
 </html>
 <?php
 
-function test_input($inpData)
-{
-    $inpData = trim($inpData);
-    $inpData = stripslashes($inpData);
-    $inpData = htmlspecialchars($inpData);
-    return $inpData;
-}
+
+    // function test_input($inpData)
+    // {
+    //     $inpData = trim($inpData);
+    //     $inpData = stripslashes($inpData);
+    //     $inpData = htmlspecialchars($inpData);
+    //     return $inpData;
+    // }
 
 ?>
