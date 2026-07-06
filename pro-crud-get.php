@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-<?php include "underconstruct.php"; ?>
-=======
 <?php
 session_start();
 if (!isset($_SESSION['admin'])) {
@@ -8,6 +5,7 @@ if (!isset($_SESSION['admin'])) {
 } else {
     echo "Welkom, admin!";
 }
+?>
 
 
 
@@ -95,5 +93,9 @@ try {
 ?>
 
 </body>
+<<<<<<< HEAD
 </html>
 >>>>>>> Stashed changes
+=======
+</html>
+>>>>>>> C01-01r
