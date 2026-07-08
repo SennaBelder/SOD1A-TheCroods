@@ -16,50 +16,71 @@
 	<div class="centerflex, spaceabovebelow">
 		<?php
 			require_once "dbconnect.php";
+
 			try {
-				$sQuery = "SELECT category.ID, category.name, COUNT(product.ID) AS aantalproducten,
-				                  AVG(product.price) AS gemprijs
-				           FROM category
-				           LEFT JOIN product ON product.categoryid = category.ID AND product.isactive = 'J'
-				           GROUP BY category.ID, category.name
-				           ORDER BY category.name";
+				// eerst alle categorieen ophalen
+				$sQuery = "SELECT ID, name FROM category ORDER BY name";
 				$oStmt = $db->prepare($sQuery);
 				$oStmt->execute();
-				?>
-
-				<p>&nbsp;</p>
-				<h2 class='centercell'>Categorieën met gemiddelde productprijs</h2>
-				<p>&nbsp;</p>
-
-				<?php
-				if ($oStmt->rowCount() > 0) {
-					echo '<table class="tabledisp2">';
-					echo '<thead>';
-					echo '<td>Categorie</td>';
-					echo '<td>Aantal producten</td>';
-					echo '<td>Gemiddelde prijs</td>';
-					echo '</thead>';
-					while ($aRow = $oStmt->fetch(PDO::FETCH_ASSOC)) {
-						echo '<tr>';
-						echo '<td>' . htmlspecialchars($aRow['name']) . '</td>';
-						echo '<td>' . $aRow['aantalproducten'] . '</td>';
-						echo '<td>' . ($aRow['gemprijs'] !== null ? number_format($aRow['gemprijs'], 2) : '-') . '</td>';
-						echo '</tr>';
-					}
-					echo '</table>';
-				} else {
-					echo 'Helaas, geen gegevens bekend';
-				}
+				$aCategorieen = $oStmt->fetchAll(PDO::FETCH_ASSOC);
 			} catch (PDOException $e) {
-				$sMsg = '<p>
-							Regelnummer: ' . $e->getLine() . '<br />
-							Bestand: ' . $e->getFile() . '<br />
-							Foutmelding: ' . $e->getMessage() . '
-						</p>';
-
-				trigger_error($sMsg);
+				echo $e->getMessage();
 			}
-			$db = null;
+		?>
+
+		<p>&nbsp;</p>
+		<h2 class='centercell'>Categorieën met gemiddelde productprijs</h2>
+		<p>&nbsp;</p>
+
+		<?php
+		if (count($aCategorieen) > 0) {
+			echo '<table class="tabledisp2">';
+			echo '<thead>';
+			echo '<td>Categorie</td>';
+			echo '<td>Aantal producten</td>';
+			echo '<td>Gemiddelde prijs</td>';
+			echo '</thead>';
+
+			foreach ($aCategorieen as $cat) {
+				$catID = $cat['ID'];
+
+				try {
+					$sQuery2 = "SELECT price FROM product WHERE categoryid = :catid AND isactive = 'J'";
+					$oStmt2 = $db->prepare($sQuery2);
+					$oStmt2->bindParam(':catid', $catID);
+					$oStmt2->execute();
+					$aProducten = $oStmt2->fetchAll(PDO::FETCH_ASSOC);
+				} catch (PDOException $e) {
+					echo $e->getMessage();
+				}
+
+				$aantal = count($aProducten);
+				$totaal = 0;
+
+				for ($i = 0; $i < $aantal; $i++) {
+					$totaal = $totaal + $aProducten[$i]['price'];
+				}
+
+				if ($aantal > 0) {
+					$gemiddelde = $totaal / $aantal;
+					$gemiddelde = number_format($gemiddelde, 2);
+				} else {
+					$gemiddelde = '-';
+				}
+
+				echo '<tr>';
+				echo '<td>' . $cat['name'] . '</td>';
+				echo '<td>' . $aantal . '</td>';
+				echo '<td>' . $gemiddelde . '</td>';
+				echo '</tr>';
+			}
+
+			echo '</table>';
+		} else {
+			echo 'Helaas, geen gegevens bekend';
+		}
+
+		$db = null;
 		?>
 	</div>
 
