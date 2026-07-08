@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include "nav.html";
 
 if (!isset($_SESSION['admin'])) {
     die("Access Denied");
@@ -31,6 +31,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Product toevoegen</title>
+     <link rel="stylesheet" href="company.css">
 </head>
 <body>
 

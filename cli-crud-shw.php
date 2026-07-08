@@ -23,6 +23,7 @@
         $sQuery = "SELECT id, CONCAT(first_name, ' ', last_name) AS full_name, email, adress, zipcode, city, state, telephone
                    FROM client
                    ORDER BY id";
+
         $oStmt = $db->prepare($sQuery);
         $oStmt->execute();
 
@@ -39,6 +40,7 @@
             echo '<td>Woonplaats</td>';
             echo '<td>Provincie</td>';
             echo '<td>Telefoon</td>';
+            echo '<td>Acties</td>';
             echo '</tr></thead>';
 
             while ($aRow = $oStmt->fetch(PDO::FETCH_ASSOC)) {
@@ -51,6 +53,13 @@
                 echo '<td>' . htmlspecialchars($aRow['city']) . '</td>';
                 echo '<td>' . htmlspecialchars($aRow['state']) . '</td>';
                 echo '<td>' . htmlspecialchars($aRow['telephone']) . '</td>';
+
+                echo '<td>
+                        <a href="pro_crud-ww.php?id=' . (int) $aRow['id'] . '">
+                            <button>Wachtwoord wijzigen</button>
+                        </a>
+                      </td>';
+
                 echo '</tr>';
             }
 
@@ -59,7 +68,7 @@
             echo 'Er zijn momenteel geen klanten beschikbaar.';
         }
     } catch (PDOException $e) {
-        trigger_error('Klantenoverzicht kon niet worden geladen: ' . $e->getMessage());
+        echo 'Klantenoverzicht kon niet worden geladen: ' . $e->getMessage();
     }
 
     $db = null;

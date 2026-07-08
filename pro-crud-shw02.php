@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include "nav.html";
 
 if (!isset($_SESSION['admin'])) {
    die("Access Denied");
@@ -19,6 +19,7 @@ $dsn = "mysql:host=localhost;dbname=$dbname;charset=utf8mb4";
 <head>
     <meta charset="UTF-8">
     <title>Alle producten</title>
+     <link rel="stylesheet" href="company.css">
 </head>
 <body>
 

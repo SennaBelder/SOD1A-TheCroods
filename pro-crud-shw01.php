@@ -1,5 +1,6 @@
 <?php
 SESSION_START();
+include "nav.html";
 $_SESSION['admin'] = true;
 
 IF(!isset($_SESSION['admin'])){
@@ -21,6 +22,7 @@ $dsn = "mysql:host=localhost;dbname=$dbname;charset=utf8mb4";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>inactive producten</title>
+     <link rel="stylesheet" href="company.css">
 </head>
 <body>
     <h2>Inactive Producten</h2>

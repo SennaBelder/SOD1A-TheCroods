@@ -2,51 +2,52 @@
 session_start();
 
 
-
-if (!isset($_GET['id'])) {
-    die("Geen id meegegeven");
+if (!isset($_SESSION['admin'])) {
+    die("Access Denied");
 }
-
-$id = $_GET['id'];
 
 $username = "root";
 $password = "";
 $dbname = "the-croods";
 $dsn = "mysql:host=localhost;dbname=$dbname;charset=utf8mb4";
- 
-$pdo = new PDO("mysql:host=localhost;dbname=the-croods;charset=utf8mb4", "root", "");
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$stmt = $pdo->prepare("SELECT * FROM product WHERE id = :id");
-$stmt->execute(['id' => $id]);
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+    $id = $_GET['id'] ?? $_POST['id'] ?? null;
 
-if (!$product) {
-    die("Product niet gevonden");
+    if ($id === null) {
+        die("Geen product ID meegegeven.");
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $sql = "DELETE FROM product WHERE id = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+
+        header("Location: pro-crud-get.php");
+        exit;
+    }
+
+    $sql = "SELECT productname, price FROM product WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$product) {
+        die("Product niet gevonden.");
+    }
+
+} catch (PDOException $e) {
+    die("Fout: " . $e->getMessage());
 }
-
-
-$check = $pdo->prepare("
-    SELECT COUNT(*)
-    FROM purchaseline pl
-    JOIN purchase p ON pl.purchaseid = p.id
-    WHERE pl.productid = :id
-");
-
-$check->execute(['id' => $id]); {
-$count = $check->fetchColumn();
-}
-if ($count > 0) {
-    header("Location: pro-crud-get.php");
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
+    <meta charset="UTF-8">
     <title>Product verwijderen</title>
 </head>
 <body>
@@ -55,18 +56,19 @@ if ($count > 0) {
 
 <p>Weet je zeker dat je dit product wilt verwijderen?</p>
 
-<ul>
-    <li>ID: <?= $product['id'] ?></li>
-    <li>Naam: <?= $product['productname'] ?></li>
-    <li>Prijs: <?= $product['price'] ?></li>
-</ul>
+<p>ID: <?php echo htmlspecialchars($id); ?></p>
+<p>Naam: <?php echo htmlspecialchars($product['productname']); ?></p>
+<p>Prijs: €<?php echo htmlspecialchars($product['price']); ?></p>
 
-<form action="pro-crud-delete.php" method="post">
-    <input type="hidden" name="id" value="<?= $product['id'] ?>">
-
+<form method="POST" action="pro-crud-del.php">
+    <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
     <button type="submit">Verwijder</button>
-    <a href="pro-crud-get.php">Breek af</a>
 </form>
+
+<br>
+
+
+
 
 </body>
 </html>

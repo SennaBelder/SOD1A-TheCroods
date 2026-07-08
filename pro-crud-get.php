@@ -1,16 +1,12 @@
 <?php
 session_start();
+include "nav.html";
+
 if (!isset($_SESSION['admin'])) {
-   die("Access Denied");
+    die("Access Denied");
 } else {
     echo "Welkom, admin!";
 }
-?>
-
-
-
-   
-   
 
 $username = "root";
 $password = "";
@@ -19,15 +15,15 @@ $dsn = "mysql:host=localhost;dbname=$dbname;charset=utf8mb4";
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <title>Onderhoud producten</title>
+    <link rel="stylesheet" href="company.css">
 </head>
 <body>
 
 <h1>Onderhoud producten</h1>
-
 
 <a href="pro-crud-add.php">
     <button>Product toevoegen</button>
@@ -62,7 +58,6 @@ try {
           </tr>";
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
         echo "<tr>";
         echo "<td>" . $row['id'] . "</td>";
         echo "<td>" . $row['productname'] . "</td>";
@@ -71,7 +66,6 @@ try {
         echo "<td>" . $row['supplier_name'] . "</td>";
         echo "<td>" . ($row['isactive'] == 'J' ? 'Ja' : 'Nee') . "</td>";
 
-       
         echo "<td>
                 <a href='pro-crud-upd.php?id=" . $row['id'] . "'>
                     <button>Wijzigen</button>
@@ -81,7 +75,6 @@ try {
                     <button>Verwijderen</button>
                 </a>
               </td>";
-
         echo "</tr>";
     }
 
@@ -93,9 +86,4 @@ try {
 ?>
 
 </body>
-<<<<<<< HEAD
 </html>
->>>>>>> Stashed changes
-=======
-</html>
->>>>>>> C01-01r
