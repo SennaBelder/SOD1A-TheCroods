@@ -56,6 +56,11 @@
           $_SESSION["welkNummerIsDit"] = $randomclient;
           $_SESSION["wieBenJeDan"] = $dataClient["first_name"]." ".$dataClient["last_name"];
           $_SESSION["SoortToegang"] = "Beheer";
+
+          header("Refresh: 2, url=../index.php");
+          echo "<h2>Inloggen als BEHEERDER is gelukt</h2><br>";
+          echo "<p>Inlognaam is : ". $_SESSION["wieBenJeDan"] ."</p>";
+          echo "<p>Primary key van deze beheerder is: ". $_SESSION["welkNummerIsDit"] ."</p>";
         } else {
             echo "<h1>INLOGGEN MISLUKT !!!!</h1>";
             die();

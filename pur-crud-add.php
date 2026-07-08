@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="company.css">
-  <title>Add product</title>
-</head>
-<body>
-
 <?php
-include "underconstruct.php";
-
-
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'klant') {
-}
-
+session_start();
+include "nav.html";
 require_once 'dbconnect.php';
-
-
 
 $sql = "
     SELECT p.id, p.productname, c.name AS category_name, p.price
@@ -27,13 +11,30 @@ $sql = "
     ORDER BY c.name, p.productname
 ";
 
+if (!isset($_SESSION["benJeErAl"]) || $_SESSION["SoortToegang"] !== "Klant")
+{
+    header("Refresh: 4, url=login.php");
+    echo "<h2>Je moet ingelogd zijn als klant om producten te kunnen bestellen!</h2>";
+    exit();
+}
+
+
 $stmt = $db->query($sql);
-$rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Add product</title>
+    <link rel="stylesheet" href="company.css">
+</head>
+<body>
 
-<h2 class = "warning                                    ">LET OP: je kan maar één product tegelijk bestellen</h2>
+<h2>LET OP: je kan maar één product tegelijk bestellen</h2>
 
-<?php if (count($rows) > 0): ?>   <!-- ← count() ipv num_rows -->
+<?php if (count($rows) > 0): ?>
+
     <table>
         <thead>
             <tr>
@@ -46,19 +47,19 @@ $rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($rows as $row): ?>   <!-- ← foreach over array -->
+            <?php foreach ($rows as $row): ?>
             <tr>
                 <td><?= htmlspecialchars($row['id']) ?></td>
                 <td><?= htmlspecialchars($row['productname']) ?></td>
                 <td><?= htmlspecialchars($row['category_name']) ?></td>
-                <td class="price">€ <?= number_format($row['price'], 2, ',', '.') ?></td>
+                <td>€ <?= number_format($row['price'], 2, ',', '.') ?></td>
                 <td>
                     <form action="pur-crud-adding.php" method="POST">
-                        <input type="hidden" name="product_id" value="<?= (int)$row['id'] ?>">
-                        <input type="number" name="aantal" value="1" min="1" required>
-                </td>
-                <td>
-                        <button type="submit" class="btn-bestellen">Bestellen</button>
+                        <input type="hidden" name="prod_applyinsert" value="1">
+                        <input type="hidden" name="productid" value="<?= (int)$row['id'] ?>">
+                        <input type="hidden" name="prod_price" value="<?= htmlspecialchars($row['price']) ?>">
+                        <input type="number" name="aantal" value="0" min="1" required>
+                        <button type="submit">Bestellen</button>
                     </form>
                 </td>
             </tr>
@@ -68,6 +69,7 @@ $rows   = $stmt->fetchAll(PDO::FETCH_ASSOC);  // ← PDO-manier
 
 <?php else: ?>
     <p class="no-products">Er zijn momenteel geen actieve producten beschikbaar.</p>
+    <p>Er zijn momenteel geen actieve producten beschikbaar</p>
 <?php endif; ?>
 
 </body>
