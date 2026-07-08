@@ -3,8 +3,6 @@ session_start();
 
 if (!isset($_SESSION['admin'])) {
     die("Access Denied");
-} else {
-    echo "Welkom, admin!";
 }
 
 $host = "localhost";
@@ -54,15 +52,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ]);
 
         $message = "
-        <div style='padding:15px; background:#d4edda; border:1px solid #28a745; color:#155724; width:400px; margin:20px auto; text-align:center;'>
+        <div style='padding:15px; background:#d4edda; border:1px solid #28a745; color:#155724; width:450px; margin:20px auto; text-align:center;'>
             <h3>Wachtwoord succesvol gewijzigd!</h3>
-            <p>U wordt automatisch doorgestuurd naar de homepage.</p>
-            <a href='index.php'>
-                <button>Terug naar homepage</button>
+            <p>Uw wachtwoord is succesvol gewijzigd.</p>
+            <p>U wordt automatisch teruggestuurd naar het klantenoverzicht.</p>
+
+            <a href='cli-crud-get.php'>
+                <button>Terug naar klantenoverzicht</button>
             </a>
         </div>";
 
-        header("refresh:3;url=index.php");
+        header("refresh:3;url=cli-crud-get.php");
     }
 }
 ?>
@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <input type="password" name="confirm_password" required><br><br>
 
     <button type="submit">Wijzigen</button>
-    <a href="index.php">Annuleren</a>
+    <a href="cli-crud-get.php">Annuleren</a>
 </form>
 <?php } ?>
 
