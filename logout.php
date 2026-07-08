@@ -9,12 +9,12 @@
 <body>
     <?php
         session_start();
-        // Alle SESSION variabelen weggooien en de sessie zelf ook opheffen.
+        
         $_SESSION = array();
         session_unset();
         session_destroy();
 
-        // Nieuwe (lege) sessie starten zodat de nav.html geen fouten geeft.
+        
         session_start();
 
         header("Refresh: 3, url=index.php");
